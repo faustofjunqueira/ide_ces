@@ -24,7 +24,11 @@ import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 
 /*
- * Fazer File Filter no save e no Load
+ * TODO File Filter no save e no Load
+ * TODO Aparecer comentario descrevendo a operação feita = )
+ * TODO colokar highlight
+ * TODO fazer step to step
+ * TODO fazer o IO 
  */
 
 public class prime_frame extends JFrame {
@@ -39,14 +43,23 @@ public class prime_frame extends JFrame {
 	JButton btn_sair;
 	JTextField terminal;
 	TextField regP, regT, regC;
-	static String title = "CES - Computador Extremamente Simples - v2.0"; 
+	static String title = "CES - Computador Extremamente Simples";
+	static String version = "Versão 2.0\nAno 2012";
+	static String idealizador = "Idealizador:\n  Nelson Quilula Vasconcelos";
+	static String staff = "Staff:\n  Fausto Ferreira Junqueira\n  Julio Cesar da Silva Pereira";
 	
+	/**
+	 * Método de entrada
+	 * 
+	 * @param String[] args
+	 * @return void
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					prime_frame frame = new prime_frame();
-					frame.setVisible(true);
+					frame.setVisible(true); //define se a janela será ou não exibida
 				} catch (Exception e) {
 					Aviso a = new Aviso(e.getLocalizedMessage());
 					System.out.println(e.getLocalizedMessage());
@@ -56,7 +69,11 @@ public class prime_frame extends JFrame {
 		});
 	}
 
+	/**
+	 * Monta a janela
+	 */
 	public prime_frame() {
+		//Monta a janela
 		file = null;
 		setTitle(prime_frame.title);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,6 +83,7 @@ public class prime_frame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
+		//Botão: novo aquivo
 		JButton btn_novo = new JButton("");
 		btn_novo.setToolTipText("Novo");
 		btn_novo.setIcon(new ImageIcon("./icon/newp.png"));
@@ -74,6 +92,7 @@ public class prime_frame extends JFrame {
 		btn_novo.addActionListener(new Novo(this));
 		btn_novo.setMnemonic(KeyEvent.VK_N);
 		
+		//Botão: abrir arquivo
 		JButton btn_abrir = new JButton("");
 		btn_abrir.setToolTipText("Abrir");
 		btn_abrir.setIcon(new ImageIcon("./icon/openp.png"));
@@ -82,6 +101,7 @@ public class prime_frame extends JFrame {
 		btn_abrir.addActionListener(new Abrir(this));
 		btn_abrir.setMnemonic(KeyEvent.VK_A);
 		
+		//BOtão: salvar arquivo
 		JButton btn_salvar = new JButton("");
 		btn_salvar.setToolTipText("Salvar");
 		btn_salvar.setIcon(new ImageIcon("./icon/savep.png"));
@@ -90,6 +110,7 @@ public class prime_frame extends JFrame {
 		btn_salvar.addActionListener(new Salvar(this));
 		btn_salvar.setMnemonic(KeyEvent.VK_S);
 		
+		//Botão: executar arquivo
 		JButton btn_exec = new JButton("");
 		btn_exec.setIcon(new ImageIcon("./icon/runp.png"));
 		btn_exec.setToolTipText("Executar");
@@ -98,14 +119,17 @@ public class prime_frame extends JFrame {
 		btn_exec.addActionListener(new Executar(this));
 		btn_exec.setMnemonic(KeyEvent.VK_E);
 		
+		//Caixa de texto branca onde aparece o código
 		this.text_center = new TextArea();
 		this.text_center.setBounds(12, 21, 576, 681);
 		contentPane.add(this.text_center);
 		
+		//Legenda do console
 		Label l_console = new Label("Console:");
 		l_console.setBounds(594, 176, 68, 21);
 		contentPane.add(l_console);
 		
+		//Caixa de texto preta onde aparece o output da execução
 		this.console= new TextArea();
 		console.setForeground(Color.WHITE);
 		console.setBackground(Color.BLACK);
@@ -205,7 +229,7 @@ public class prime_frame extends JFrame {
 				      }
 				   };
 				});
-		this.printConsole("------------------------------------------------------------------\nComputador Extremamente Simples v2.0\nNelson Quilula Vasconcelos\n------------------------------------------------------------------\n");
+		this.printConsole("------------------------------------------------------------------\n"+prime_frame.title+"\n"+prime_frame.version+"\n"+prime_frame.idealizador+"\n"+prime_frame.staff+"\n------------------------------------------------------------------\n");
 	}
 	
 	void printConsole(String text){
@@ -243,7 +267,7 @@ class Abrir implements ActionListener{
 	public Abrir(prime_frame f) {
 		this.f = f;
 	}
-		
+
 	public void actionPerformed(ActionEvent e) {
 		try {
 			this.abrir();
@@ -307,7 +331,6 @@ class Salvar implements ActionListener{
 		}
 		return false;
 	}
-	
 }
 
 class Executar implements ActionListener{
@@ -335,10 +358,10 @@ class Executar implements ActionListener{
 			Salvar s = new Salvar(this.f);
 			if(s.salvar()){
 				this.f.printConsole("Executado arquivo: "+this.f.file.getPath()+" Org: "+this.f.txt_org.getText()+" Passos: "+this.f.txt_passos.getText());			
-				String command = "./ces/ces -f "+this.f.file.getPath()+" --org "+this.f.txt_org.getText()+" -i "+this.f.txt_passos.getText()+" -o";
+				String command = "./ces/ces -f "+this.f.file.getPath()+" --org "+this.f.txt_org.getText()+" -i "+this.f.txt_passos.getText()+" -o output.ces";
 				System.out.println(command);
 				Process line_comand = Runtime.getRuntime().exec(command);
-				line_comand.waitFor();				
+				line_comand.waitFor();
 				this.f.regP.setText(CesFile.LeOutputCes("output.ces").substring(0, 4));
 				this.f.regT.setText(CesFile.LeOutputCes("output.ces").substring(4, 8));
 				this.f.regC.setText(CesFile.LeOutputCes("output.ces").substring(8, 9));
@@ -347,7 +370,6 @@ class Executar implements ActionListener{
 		}
 		
 	}
-	
 }
 
 class Sair implements ActionListener{
